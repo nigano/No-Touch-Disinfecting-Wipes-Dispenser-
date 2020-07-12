@@ -1,0 +1,34 @@
+#include <Stepper.h>
+const int stepsPerRevolution = 4000;
+Stepper myStepper = Stepper(stepsPerRevolution, 8, 10, 9, 11);
+int triggerpin = 2;
+int echopin = 3;
+int distance;
+long duration;
+
+void setup() {
+  pinMode (triggerpin, OUTPUT);
+  pinMode (echopin, INPUT);
+  Serial.begin(9600); 
+  delay(1000);
+}
+
+void loop(){
+  digitalWrite(triggerpin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(triggerpin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerpin, LOW);
+  duration = pulseIn(echopin, HIGH);
+  distance = (duration * 0.034) / 2;
+
+  if (distance <= 10) {
+    stepper();
+  }
+}
+
+void stepper() {
+  myStepper.setSpeed(9);
+  myStepper.step(-stepsPerRevolution);
+}
